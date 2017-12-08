@@ -227,59 +227,60 @@ public class TransactionMySQL {
                   System.out.println( "(1) Agregar Lugar\n" ); //pais, ciudad
                   System.out.println( "(2) Agregar Hotel\n" );
                   System.out.println( "(3) Agregar Circuito\n" );
-                  System.out.println( "(4) Guardar\n" );
+                  System.out.println( "(4) Guardar y Calcular Precio\n" );
       
                   int option = Integer.parseInt("0" + in.readLine();
-                  while
-                  switch(option != 4) ) {
-                     case 1:
+                  while(option != 4) {
+                     switch(option) ) {
+                        case 1:
 
-                        query =
-                           "inserto into QUIEREVISITAR " + 
-                           "select max(identificadorSimulacion), ?, ? " +
-                           "from SIMULACION;";
-                        statement = conn.prepareStatement( query );
+                           query =
+                              "inserto into QUIEREVISITAR " + 
+                              "select max(identificadorSimulacion), ?, ? " +
+                              "from SIMULACION;";
+                           statement = conn.prepareStatement( query );
 
-                        System.out.println( "\nLugar" );
-                        statement.setString( 1, in.readLine() );
+                           System.out.println( "\nLugar" );
+                           statement.setString( 1, in.readLine() );
 
-                        System.out.println( "Descripcion" );
-                        statement.setString( 2, in.readLine() );
-                        
-                        query( statement );
-                        break;
-                     case 2:
-                        query =
-                           "inserto into QUIEREDORMIR " + 
-                           "select max(identificadorSimulacion), ?, ?, ? " +
-                           "from SIMULACION;";
-                        statement = conn.prepareStatement( query );
+                           System.out.println( "Descripcion" );
+                           statement.setString( 2, in.readLine() );
+                           
+                           query( statement );
+                           break;
+                        case 2:
+                           query =
+                              "inserto into QUIEREDORMIR " + 
+                              "select max(identificadorSimulacion), ?, ?, ? " +
+                              "from SIMULACION;";
+                           statement = conn.prepareStatement( query );
 
-                        System.out.println( "\nHotel" );
-                        statement.setString( 1, in.readLine() );
+                           System.out.println( "\nHotel" );
+                           statement.setString( 1, in.readLine() );
 
-                        System.out.println( "Direccion" );
-                        statement.setString( 2, in.readLine() );
+                           System.out.println( "Direccion" );
+                           statement.setString( 2, in.readLine() );
 
-                        System.out.println( "Ciudad" );
-                        statement.setString( 3, in.readLine() );
+                           System.out.println( "Ciudad" );
+                           statement.setString( 3, in.readLine() );
 
-                        System.out.println( "Pais" );
-                        statement.setString( 4, in.readLine() );
-                        
-                        query( statement );
-                        break;
-                     case 3:
-                        query =
-                           "inserto into QUIEREPARTICIPAR " + 
-                           "select max(identificadorSimulacion), ? " +
-                           "from SIMULACION;";
-                        statement = conn.prepareStatement( query );
+                           System.out.println( "Pais" );
+                           statement.setString( 4, in.readLine() );
+                           
+                           query( statement );
+                           break;
+                        case 3:
+                           query =
+                              "inserto into QUIEREPARTICIPAR " + 
+                              "select max(identificadorSimulacion), ? " +
+                              "from SIMULACION;";
+                           statement = conn.prepareStatement( query );
 
-                        System.out.println( "\nCircuito" );
-                        
-                        query( statement );
-                        break;
+                           System.out.println( "\nCircuito" );
+                           
+                           query( statement );
+                           break;
+                     }
                   }
 
                   query( "update SIMULACION S left join (select sum(C.precio) as costo, Q.identificadorSimulacion from CIRCUITO C, QUIEREPARTICIPAR Q where C.identificadorCircuito = Q.identificadorCircuito and Q.identificadorSimulacion = (select max(identificadorSimulacion) from SIMULACION)) P on S.identificadorSimulacion = P.identificadorSimulacion left join (select (sum(H.precioCuarto) + sum(H.precioDesayuno)) as costo, Q.identificadorSimulacion from HOTEL H, QUIEREDORMIR Q where H.nombreHotel = Q.nombreHotel and H.direccion= Q.direccion and H.nombreCiudad = Q.nombreCiudad and H.pais = Q.pais and Q.identificadorSimulacion = (select max(identificadorSimulacion) from SIMULACION)) D on S.identificadorSimulacion = D.identificadorSimulacion left join (select sum(L.precio) as costo, Q.identificadorSimulacion from LUGARVISITAR L, QUIEREVISITAR Q where L.nombreLugar = Q.nombreLugar and L.descripcion = L.descripcion and Q.identificadorSimulacion = (select max(identificadorSimulacion) from SIMULACION)) V on S.identificadorSimulacion = V.identificadorSimulacion set S.costo = P.costo + D.costo + V.costo;" );
@@ -315,7 +316,7 @@ public class TransactionMySQL {
                   System.out.println( "(2) fechaSalida\n" );
                   System.out.println( "(3) fecha de llegada\n" );
                   System.out.println( "(4) numero personas\n" );
-                  System.out.println( "(5) nombre ciudad\n" );
+                  System.out.println( "(5) pais\n" );
                   System.out.println( "(6) lugar\n" );
                   System.out.println( "(7) hotel\n" );
                   System.out.println( "(8) circuito\n" );
@@ -331,35 +332,75 @@ public class TransactionMySQL {
                         break;
 
                      case 2:
+                        System.out.println( "Modificar Fecha de Salida (año-mes-dia)\n" );
+                        query = "update SIMULACION set fechaSalida = ? where nombreUsuario = ? or identificadorSimulacion = ?;";
+                        statement = conn.prepareStatement( query );
+                        statement.setString(1, in.readLine());
+                        statement.setString(2, x);
+                        statement.setInt(3, id);
+                        query(statement);
                         break;
 
                      case 3:
+                        System.out.println( "Modificar Fecha de LLegada (año-mes-dia)\n" );
+                        query = "update SIMULACION set fechaLLegada = ? where nombreUsuario = ? or identificadorSimulacion = ?;";
+                        statement = conn.prepareStatement( query );
+                        statement.setString(1, in.readLine());
+                        statement.setString(2, x);
+                        statement.setInt(3, id);
+                        query(statement);
                         break;
 
                      case 4:
+                        System.out.println( "Modificar Numero de Personas\n" );
+                        query = "update SIMULACION set nbPersonas = ? where nombreUsuario = ? or identificadorSimulacion = ?;";
+                        statement = conn.prepareStatement( query );
+                        statement.setInt(1, Integer.parseInt( in.readLine() ) );
+                        statement.setString(2, x);
+                        statement.setInt(3, id);
+                        query(statement);
                         break;
 
                      case 5:
+                        System.out.println( "Modificar pais\n" );
+                        query = "update SIMULACION set pais = ? where nombreUsuario = ? or identificadorSimulacion = ?;";
+                        statement = conn.prepareStatement( query );
+                        statement.setString(1, in.readLine());
+                        statement.setString(2, x);
+                        statement.setInt(3, id);
+                        query(statement);
                         break;
 
                      case 6:
+                        // TODO Cambiar Lugar
                         break;
 
                      case 7:
+                        // TODO Cambiar Hotel
                         break;
 
                      case 8:
+                        // TODO Cambiar Circuito
                         break;
                   }
 
                   break;
 
                case 4:
-                  System.out.println( "Numero de simulacion o nombre a eliminar\n" ); //pais, ciudad
-                  String r;
-                  r = "'" + in.readLine() + "'";
-                  statement = ( "delete from SIMULACION where nombre= " + r + " or identificadorSimulacion= " + r);
-                  stmt.executeUpdate( statement );
+
+                  System.out.println( "Numero de simulacion o nombre (de usuario) para eliminar\n" );
+                  String x;
+                  int id = 0;
+                  x = in.readLine();
+                  try {
+                     id = Integer.readLine(x)
+                  } catch (NumerFormatException e) {}
+
+                  query = "delete from SIMULACION where nombreUsuario = ? or identificadorSimulacion = ?;";
+                  statement = conn.prepareStatement( query );
+                  statement.setString(1, x);
+                  statement.setInt(2, id);
+                  query(statement);
                   System.out.println( "Eliminacion exitosa\n" );
                   break;
             }
@@ -448,25 +489,28 @@ public class TransactionMySQL {
             break;
 
 
-         case 4:	conn.commit();      // fin de la transacción e inicio de la siguiente
-                  break;
+         case 4:
+            conn.commit();      // fin de la transacción e inicio de la siguiente
+            break;
 
-         case 5:	conn.rollback();    // fin de la transacción e inicio de la siguiente
-                  break;
+         case 5:
+            conn.rollback();    // fin de la transacción e inicio de la siguiente
+            break;
 
-         case 6:	System.out.println();
+         case 6:
+            System.out.println();
+            System.out.println( conn.TRANSACTION_NONE + " = TRANSACTION_NONE" );
+            System.out.println( conn.TRANSACTION_READ_UNCOMMITTED + " = TRANSACTION_READ_UNCOMMITTED" );
+            System.out.println( conn.TRANSACTION_READ_COMMITTED + " = TRANSACTION_READ_COMMITTED" );
+            System.out.println( conn.TRANSACTION_REPEATABLE_READ + " = TRANSACTION_REPEATABLE_READ" );
+            System.out.println( conn.TRANSACTION_SERIALIZABLE + " = TRANSACTION_SERIALIZABLE\n\n" );
 
-                  System.out.println( conn.TRANSACTION_NONE + " = TRANSACTION_NONE" );
-                  System.out.println( conn.TRANSACTION_READ_UNCOMMITTED + " = TRANSACTION_READ_UNCOMMITTED" );
-                  System.out.println( conn.TRANSACTION_READ_COMMITTED + " = TRANSACTION_READ_COMMITTED" );
-                  System.out.println( conn.TRANSACTION_REPEATABLE_READ + " = TRANSACTION_REPEATABLE_READ" );
-                  System.out.println( conn.TRANSACTION_SERIALIZABLE + " = TRANSACTION_SERIALIZABLE\n\n" );
+            System.out.println( "Nivel?" );
+            conn.setTransactionIsolation( Integer.parseInt( in.readLine() ) );
+            break;
 
-                  System.out.println( "Nivel?" );
-                  conn.setTransactionIsolation( Integer.parseInt( in.readLine() ) );
-                  break;
-
-         case 7:	return false;
+         case 7:	
+         return false;
       }
       return true;
    }
@@ -481,16 +525,17 @@ public class TransactionMySQL {
 
       TransactionMySQL transaction = new TransactionMySQL();
 
-      while( true )
+      boolean cont = true;
+      while( cont )
 
          try {
-            if( ! transaction.menu() )
-               break;
+            cont = transaction.menu()
 
          } catch( Exception e ) {
 
             System.err.println( "failed" );
             e.printStackTrace( System.err );
+            cont = false;
          }
 
       transaction.close();
