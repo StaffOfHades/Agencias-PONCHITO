@@ -207,8 +207,7 @@ public class TransactionMySQL {
             switch(Integer.parseInt("0" + in.readLine()) ) {
                case 1:
                   query =
-                     "insert into SIMULACION (nombreUsuario, fechaSalida, fechaLlegada, nbPersonas, pais)" +
-                     "values (?, ?, ?, ?, ?);";
+                     "insert into SIMULACION (nombreUsuario, fechaSalida, fechaLlegada, nbPersonas, pais, costo) values (?, ?, ?, ?, ?, 0);";
                   statement = conn.prepareStatement( query );
 
                   System.out.println( "\nNombre?" );
@@ -316,7 +315,7 @@ public class TransactionMySQL {
                   int id2 = 0;
                   x2 = in.readLine();
                   try {
-                     id2 = Integer.parseInt( in.readLine() );
+                     id2 = Integer.parseInt( x2 );
                   } catch (NumberFormatException e) {}
 
                   query = "select * from SIMULACION where nombreUsuario = ? or identificadorSimulacion = ?;";
@@ -332,17 +331,17 @@ public class TransactionMySQL {
                   int id3 = 0;
                   x3 = in.readLine();
                   try {
-                     id3 = Integer.parseInt( in.readLine() );
+                     id3 = Integer.parseInt( x3 );
                   } catch (NumberFormatException e) {}
 
                   System.out.println( "(1) nombre\n" ); //pais, ciudad
                   System.out.println( "(2) fechaSalida\n" );
                   System.out.println( "(3) fecha de llegada\n" );
                   System.out.println( "(4) numero personas\n" );
-                  System.out.println( "(5) pais\n" );
-                  System.out.println( "(6) lugar\n" );
-                  System.out.println( "(7) hotel\n" );
-                  System.out.println( "(8) circuito\n" );
+                  //System.out.println( "(5) pais\n" );
+                  //System.out.println( "(6) lugar\n" );
+                  //System.out.println( "(7) hotel\n" );
+                  //System.out.println( "(8) circuito\n" );
                   switch(Integer.parseInt("0" + in.readLine()) ) {
                      case 1:
                         System.out.println( "Modificar nombre\n" );
@@ -416,7 +415,7 @@ public class TransactionMySQL {
                   int id4 = 0;
                   x4 = in.readLine();
                   try {
-                     id4 = Integer.parseInt( in.readLine() );
+                     id4 = Integer.parseInt( x4 );
                   } catch (NumberFormatException e) {}
 
                   query = "delete from SIMULACION where nombreUsuario = ? or identificadorSimulacion = ?;";
@@ -439,11 +438,11 @@ public class TransactionMySQL {
             switch(Integer.parseInt("0" + in.readLine()) ) {
                case 1:
                   System.out.println( "Numero de simulacion o nombre de usuario para utilizar\n" );
-                  String x;
-                  int id = 0;
-                  x = in.readLine();
+                  String x1;
+                  int id1 = 0;
+                  x1 = in.readLine();
                   try {
-                     id = Integer.parseInt( in.readLine() );
+                     id1 = Integer.parseInt( x1 );
                   } catch (NumberFormatException e) {}
                   // TODO VALIDAR RESERVACION
                   break;
@@ -475,8 +474,8 @@ public class TransactionMySQL {
                   }
 
                   query =
-                     "insert into RESERVACION (nombreUsuario, fechaSalida, fechaLlegada, nbPersonas, pais)" +
-                     "values (?, ?, ?, ?, ?);";
+                     "insert into RESERVACION (nombreUsuario, fechaSalida, fechaLlegada, nbPersonas, pais, costo)" +
+                     "values (?, ?, ?, ?, ?, 0);";
                   statement = conn.prepareStatement( query );
 
                   System.out.println( "\nNombre?" );
@@ -582,20 +581,30 @@ public class TransactionMySQL {
                   break;
 
                case 3:
-                  //numero de reservacion y Nombre
+                  System.out.println( "Numero de reservacion o nombre de usuario a consultar\n" );
+                  String x3;
+                  int id3 = 0;
+                  x3 = in.readLine();
+                  try {
+                     id3 = Integer.parseInt( x3 );
+                  } catch (NumberFormatException e) {}
 
-                  //regresas reservacion
+                  query = "select * from RESERVACION where nombreUsuario = ? or identificadorSimulacion = ?;";
+                  statement = conn.prepareStatement( query );
+                  statement.setString(1, x3);
+                  statement.setInt(2, id3);
+                  query(statement);
                   break;
 
-               case 4:
-                  System.out.println( "(1) nombre\n" ); //pais, ciudad
+               case 10:
+                  System.out.println( "(1) nombre\n" );
                   System.out.println( "(2) fechaSalida\n" );
                   System.out.println( "(3) fecha de llegada\n" );
                   System.out.println( "(4) numero personas\n" );
-                  System.out.println( "(5) nombre ciudad\n" );
-                  System.out.println( "(6) lugar\n" );
-                  System.out.println( "(7) hotel\n" );
-                  System.out.println( "(8) circuito\n" );
+                  System.out.println( "(5) pais\n" );
+                  //System.out.println( "(6) lugar\n" );
+                  //System.out.println( "(7) hotel\n" );
+                  //System.out.println( "(8) circuito\n" );
                   switch(Integer.parseInt("0" + in.readLine()) ) {
                      case 1:
                         break;
@@ -621,14 +630,23 @@ public class TransactionMySQL {
                      case 8:
                         break;
                   }
-
                   break;
 
                case 5:
-                  //numero reservacion o
-                  //nombre
+                  System.out.println( "Numero de reservacion o nombre (de usuario) para eliminar\n" );
+                  String x5;
+                  int id5 = 0;
+                  x5 = in.readLine();
+                  try {
+                     id5 = Integer.parseInt( x5 );
+                  } catch (NumberFormatException e) {}
 
-                  //regresar print eliminacion exitosa
+                  query = "delete from RESERVACION where nombreUsuario = ? or identificadorSimulacion = ?;";
+                  statement = conn.prepareStatement( query );
+                  statement.setString(1, x5);
+                  statement.setInt(2, id5);
+                  update(statement);
+                  System.out.println( "Eliminacion exitosa\n" );
                   break;
             }
             break;
