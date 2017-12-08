@@ -43,7 +43,7 @@ public class TransactionMySQL {
       dumpResultSet( rset );
       System.out.println();
       rset.close();
-}
+   }
 
    private void query( PreparedStatement statement ) throws SQLException {
       ResultSet rset = statement.executeQuery();
@@ -233,21 +233,57 @@ public class TransactionMySQL {
                   while
                   switch(option != 4) ) {
                      case 1:
-                        // TODO Recuperar y Guardar Lugar a Simulacion con Tabla
-                        // QUIEREVISITAR usando max(idSimulacion)
+
+                        query =
+                           "inserto into QUIEREVISITAR " + 
+                           "select max(identificadorSimulacion), ?, ? " +
+                           "from SIMULACION;";
+                        statement = conn.prepareStatement( query );
+
+                        System.out.println( "\nLugar" );
+                        statement.setString( 1, in.readLine() );
+
+                        System.out.println( "Descripcion" );
+                        statement.setString( 2, in.readLine() );
+                        
+                        query( statement );
                         break;
                      case 2:
-                        // TODO Recuperar y Guardar Hotel a Simulacion con Tabla
-                        // QUIEREDORMIR usando max(idSimulacion)
+                        query =
+                           "inserto into QUIEREDORMIR " + 
+                           "select max(identificadorSimulacion), ?, ?, ? " +
+                           "from SIMULACION;";
+                        statement = conn.prepareStatement( query );
+
+                        System.out.println( "\nHotel" );
+                        statement.setString( 1, in.readLine() );
+
+                        System.out.println( "Direccion" );
+                        statement.setString( 2, in.readLine() );
+
+                        System.out.println( "Ciudad" );
+                        statement.setString( 3, in.readLine() );
+
+                        System.out.println( "Pais" );
+                        statement.setString( 4, in.readLine() );
+                        
+                        query( statement );
                         break;
                      case 3:
-                        // TODO Recuperar y Guardar Circuito a Simulacion con Tabla
-                        // QUIEREPARTICIPAR usando max(idSimulacion)
+                        query =
+                           "inserto into QUIEREPARTICIPAR " + 
+                           "select max(identificadorSimulacion), ? " +
+                           "from SIMULACION;";
+                        statement = conn.prepareStatement( query );
+
+                        System.out.println( "\nCircuito" );
+                        
+                        query( statement );
                         break;
                   }
 
-                  // TODO Regresar numero de simulacion usando max(idSimulacion)
-                  // TODO Calcular, agregar y mostrar costo total
+                  query( "update SIMULACION S left join (select sum(C.precio) as costo, Q.identificadorSimulacion from CIRCUITO C, QUIEREPARTICIPAR Q where C.identificadorCircuito = Q.identificadorCircuito and Q.identificadorSimulacion = (select max(identificadorSimulacion) from SIMULACION)) P on S.identificadorSimulacion = P.identificadorSimulacion left join (select (sum(H.precioCuarto) + sum(H.precioDesayuno)) as costo, Q.identificadorSimulacion from HOTEL H, QUIEREDORMIR Q where H.nombreHotel = Q.nombreHotel and H.direccion= Q.direccion and H.nombreCiudad = Q.nombreCiudad and H.pais = Q.pais and Q.identificadorSimulacion = (select max(identificadorSimulacion) from SIMULACION)) D on S.identificadorSimulacion = D.identificadorSimulacion left join (select sum(L.precio) as costo, Q.identificadorSimulacion from LUGARVISITAR L, QUIEREVISITAR Q where L.nombreLugar = Q.nombreLugar and L.descripcion = L.descripcion and Q.identificadorSimulacion = (select max(identificadorSimulacion) from SIMULACION)) V on S.identificadorSimulacion = V.identificadorSimulacion set S.costo = P.costo + D.costo + V.costo;" );
+                  query( "select costo, identificadorSimulacion from SIMULACION where identificadorSimulacion = (select max(identificadorSimulacion) from SIMULACION)")
                   break;
 
                case 2:
