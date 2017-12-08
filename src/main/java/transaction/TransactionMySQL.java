@@ -248,7 +248,7 @@ public class TransactionMySQL {
                            query(statement);
 
                            query =
-                              "inserto into QUIEREVISITAR " + 
+                              "insert into QUIEREVISITAR " + 
                               "select max(identificadorSimulacion), ?, ? " +
                               "from SIMULACION;";
                            statement = conn.prepareStatement( query );
@@ -268,7 +268,7 @@ public class TransactionMySQL {
                            query(statement);
                         
                            query =
-                              "inserto into QUIEREDORMIR select max(identificadorSimulacion), ?, ?, ?, ? from SIMULACION;";
+                              "insert into QUIEREDORMIR select max(identificadorSimulacion), ?, ?, ?, ? from SIMULACION;";
                            statement = conn.prepareStatement( query );
 
                            System.out.println( "\nHotel" );
@@ -292,7 +292,7 @@ public class TransactionMySQL {
                            query(statement);
 
                            query =
-                              "inserto into QUIEREPARTICIPAR " + 
+                              "insert into QUIEREPARTICIPAR " + 
                               "select max(identificadorSimulacion), ? " +
                               "from SIMULACION;";
                            statement = conn.prepareStatement( query );
@@ -513,7 +513,7 @@ public class TransactionMySQL {
                            query(statement);
 
                            query =
-                              "inserto into VISITARA " + 
+                              "insert into VISITARA " + 
                               "select max(identificadorSimulacion), ?, ? " +
                               "from SIMULACION;";
                            statement = conn.prepareStatement( query );
