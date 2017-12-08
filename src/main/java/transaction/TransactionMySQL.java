@@ -232,14 +232,15 @@ public class TransactionMySQL {
                   statement.setString( 5, pais );
 
                   update( statement );
-
-                  System.out.println( "(1) Agregar Lugar\n" ); //pais, ciudad
-                  System.out.println( "(2) Agregar Hotel\n" );
-                  System.out.println( "(3) Agregar Circuito\n" );
-                  System.out.println( "(4) Guardar y Calcular Precio\n" );
-      
-                  int option = Integer.parseInt("0" + in.readLine() );
+                  int option = 0;
                   while(option != 4) {
+                     System.out.println( "(1) Agregar Lugar\n" ); //pais, ciudad
+                     System.out.println( "(2) Agregar Hotel\n" );
+                     System.out.println( "(3) Agregar Circuito\n" );
+                     System.out.println( "(4) Guardar y Calcular Precio\n" );
+         
+                     option = Integer.parseInt("0" + in.readLine() );
+
                      switch(option) {
                         case 1:
                            query = "select nombreLugar, descripcion from LUGARAVISITAR where pais = ?;";
@@ -249,7 +250,7 @@ public class TransactionMySQL {
 
                            query =
                               "insert into QUIEREVISITAR " + 
-                              "select max(identificadorSimulacion), ?, ? " +
+                              "select max(identificagit dorSimulacion), ?, ? " +
                               "from SIMULACION;";
                            statement = conn.prepareStatement( query );
 
@@ -503,8 +504,15 @@ public class TransactionMySQL {
                   System.out.println( "(3) Agregar Circuito\n" );
                   System.out.println( "(4) Guardar y Calcular Precio\n" );
       
-                  int option = Integer.parseInt("0" + in.readLine() );
+                  update( statement );
+                  int option = 0;
                   while(option != 4) {
+                     System.out.println( "(1) Agregar Lugar\n" ); //pais, ciudad
+                     System.out.println( "(2) Agregar Hotel\n" );
+                     System.out.println( "(3) Agregar Circuito\n" );
+                     System.out.println( "(4) Guardar y Calcular Precio\n" );
+         
+                     option = Integer.parseInt("0" + in.readLine() );
                      switch(option) {
                         case 1:
                            query = "select nombreLugar, descripcion from LUGARAVISITAR where pais = ?;";
