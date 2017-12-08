@@ -233,6 +233,10 @@ public class TransactionMySQL {
                   while(option != 4) {
                      switch(option) ) {
                         case 1:
+                           query = "select nombreLugar, descripcion from LUGARAVISITAR where pais = ?;";
+                           statement = conn.prepareStatement( query );
+                           statement.setString( 1, pais );
+                           query(statement);
 
                            query =
                               "inserto into QUIEREVISITAR " + 
@@ -249,6 +253,11 @@ public class TransactionMySQL {
                            query( statement );
                            break;
                         case 2:
+                           query = "select nombreHotel, direccion, nombreCiudad, pais from HOTEL where pais = ?;";
+                           statement = conn.prepareStatement( query );
+                           statement.setString( 1, pais );
+                           query(statement);
+                        
                            query =
                               "inserto into QUIEREDORMIR " + 
                               "select max(identificadorSimulacion), ?, ?, ? " +
@@ -270,6 +279,11 @@ public class TransactionMySQL {
                            query( statement );
                            break;
                         case 3:
+                           query = "select identificadorCircuito from CIRCUITO where pais = ?;";
+                           statement = conn.prepareStatement( query );
+                           statement.setString( 1, pais );
+                           query(statement);
+
                            query =
                               "inserto into QUIEREPARTICIPAR " + 
                               "select max(identificadorSimulacion), ? " +
@@ -283,7 +297,7 @@ public class TransactionMySQL {
                      }
                   }
 
-                  query( "update SIMULACION S left join (select sum(C.precio) as costo, Q.identificadorSimulacion from CIRCUITO C, QUIEREPARTICIPAR Q where C.identificadorCircuito = Q.identificadorCircuito and Q.identificadorSimulacion = (select max(identificadorSimulacion) from SIMULACION)) P on S.identificadorSimulacion = P.identificadorSimulacion left join (select (sum(H.precioCuarto) + sum(H.precioDesayuno)) as costo, Q.identificadorSimulacion from HOTEL H, QUIEREDORMIR Q where H.nombreHotel = Q.nombreHotel and H.direccion= Q.direccion and H.nombreCiudad = Q.nombreCiudad and H.pais = Q.pais and Q.identificadorSimulacion = (select max(identificadorSimulacion) from SIMULACION)) D on S.identificadorSimulacion = D.identificadorSimulacion left join (select sum(L.precio) as costo, Q.identificadorSimulacion from LUGARVISITAR L, QUIEREVISITAR Q where L.nombreLugar = Q.nombreLugar and L.descripcion = L.descripcion and Q.identificadorSimulacion = (select max(identificadorSimulacion) from SIMULACION)) V on S.identificadorSimulacion = V.identificadorSimulacion set S.costo = P.costo + D.costo + V.costo;" );
+                  query( "update SIMULACION S left join (select sum(C.precio) as costo, Q.identificadorSimulacion from CIRCUITO C, QUIEREPARTICIPAR Q where C.identificadorCircuito = Q.identificadorCircuito and Q.identificadorSimulacion = (select max(identificadorSimulacion) from SIMULACION)) P on S.identificadorSimulacion = P.identificadorSimulacion left join (select (sum(H.precioCuarto) + sum(H.precioDesayuno)) as costo, Q.identificadorSimulacion from HOTEL H, QUIEREDORMIR Q where H.nombreHotel = Q.nombreHotel and H.direccion= Q.direccion and H.nombreCiudad = Q.nombreCiudad and H.pais = Q.pais and Q.identificadorSimulacion = (select max(identificadorSimulacion) from SIMULACION)) D on S.identificadorSimulacion = D.identificadorSimulacion left join (select sum(L.precio) as costo, Q.identificadorSimulacion from LUGARAVISITAR L, QUIEREVISITAR Q where L.nombreLugar = Q.nombreLugar and L.descripcion = L.descripcion and Q.identificadorSimulacion = (select max(identificadorSimulacion) from SIMULACION)) V on S.identificadorSimulacion = V.identificadorSimulacion set S.costo = P.costo + D.costo + V.costo;" );
                   query( "select costo, identificadorSimulacion from SIMULACION where identificadorSimulacion = (select max(identificadorSimulacion) from SIMULACION)")
                   break;
 
@@ -406,7 +420,7 @@ public class TransactionMySQL {
             }
             break;
 
-         case 3:	//query( "select * from HORARIO" );
+         case 3:
             System.out.println( "(1) Crear Reservacion con Simulacion\n" ); //pais, ciudad
             System.out.println( "(2) Crear Reservacion nueva\n" );
             System.out.println( "(3) Consultar Reservacion\n" );
@@ -415,25 +429,140 @@ public class TransactionMySQL {
 
             switch(Integer.parseInt("0" + in.readLine()) ) {
                case 1:
-                  //numero y nombre Simulacion
-                  //validamos datos y se hace Simulacion
-
-                  //regresa numero reservacion
+                  System.out.println( "Numero de simulacion o nombre de usuario para utilizar\n" );
+                  String x;
+                  int id = 0;
+                  x = in.readLine();
+                  try {
+                     id = Integer.readLine(x)
+                  } catch (NumerFormatException e) {}
+                  // TODO VALIDAR RESERVACION
                   break;
 
                case 2:
-                  //nombre
-                  //fechaSalida
-                  //fecha de llegada
-                  //numero personas
-                  //pais
-                  //nombre ciudad
-                  //lugar
-                  //Hotel
-                  //circuito
+                  System.out.println( "(1) Agregar usuario\n" ); //pais, ciudad
+                  System.out.println( "(2) Continuar\n" );
+                  if(Integer.parseInt("0" + in.readLine()) == 1) {
+                     query = "insert into USUARIO values (?, ?, ?, ?, ?);"
 
-                  //regresar costo (desayuno, habitacion y circuito)
-                  //regresa numero simulacion
+                     System.out.println( "\nNombre?" );
+                     statement.setString( 1, in.readLine() );
+
+                     System.out.println( "Tipo: (C) Compañia, (G) Grupo, (I) Individual?" );
+                     statement.setString( 2, in.readLine() );
+
+                     System.out.println( "Categoria: (E) Empleado, (C) Cliente?" );
+                     statement.setString( 3, in.readLine() );
+
+                     System.out.println( "Direccion?" );
+                     statement.setString( 4, in.readLine() );
+
+                     System.out.println( "Forma de pago: (E) Efectivo, (T) Tarjeta?" );
+                     statement.setString( 5, in.readLine() );
+
+                     query(statement);
+                  }
+
+                  query =
+                     "insert into RESERVACION (nombreUsuario, fechaSalida, fechaLlegada, nbPersonas, pais)" +
+                     "values (?, ?, ?, ?, ?);"
+                  statement = conn.prepareStatement( query );
+
+                  System.out.println( "\nNombre?" );
+                  statement.setString( 1, in.readLine() );
+
+                  System.out.println( "Fecha de Salida (año-mes-dia)?" );
+                  String fechaSalida = in.readLine();
+                  statement.setString( 2, fechaSalida );
+
+                  System.out.println( "Fecha de Llegada (año-mes-dia)?" );
+                  statement.setString( 3, in.readLine() );
+
+                  System.out.println( "Numero de Personas?" );	//hacer que no sea
+                  statement.setInt( 4, Integer.parseInt( in.readLine() ) );
+
+                  System.out.println( "Pais?" );
+                  String pais = in.readLine();
+                  statement.setString( 5, pais );
+
+                  query( statement );
+
+                  System.out.println( "(1) Agregar Lugar\n" ); //pais, ciudad
+                  System.out.println( "(2) Agregar Hotel\n" );
+                  System.out.println( "(3) Agregar Circuito\n" );
+                  System.out.println( "(4) Guardar y Calcular Precio\n" );
+      
+                  int option = Integer.parseInt("0" + in.readLine();
+                  while(option != 4) {
+                     switch(option) ) {
+                        case 1:
+                           query = "select nombreLugar, descripcion from LUGARAVISITAR where pais = ?;";
+                           statement = conn.prepareStatement( query );
+                           statement.setString( 1, pais );
+                           query(statement);
+
+                           query =
+                              "inserto into QUIEREVISITAR " + 
+                              "select max(identificadorSimulacion), ?, ? " +
+                              "from SIMULACION;";
+                           statement = conn.prepareStatement( query );
+
+                           System.out.println( "\nLugar" );
+                           statement.setString( 1, in.readLine() );
+
+                           System.out.println( "Descripcion" );
+                           statement.setString( 2, in.readLine() );
+                           
+                           query( statement );
+                           break;
+                        case 2:
+                           query = "select nombreHotel, direccion, nombreCiudad, pais from HOTEL where pais = ?;";
+                           statement = conn.prepareStatement( query );
+                           statement.setString( 1, pais );
+                           query(statement);
+                        
+                           query =
+                              "inserto into QUIEREDORMIR " + 
+                              "select max(identificadorSimulacion), ?, ?, ? " +
+                              "from SIMULACION;";
+                           statement = conn.prepareStatement( query );
+
+                           System.out.println( "\nHotel" );
+                           statement.setString( 1, in.readLine() );
+
+                           System.out.println( "Direccion" );
+                           statement.setString( 2, in.readLine() );
+
+                           System.out.println( "Ciudad" );
+                           statement.setString( 3, in.readLine() );
+
+                           System.out.println( "Pais" );
+                           statement.setString( 4, in.readLine() );
+                           
+                           query( statement );
+                           break;
+                        case 3:
+                           query = "select identificadorCircuito from CIRCUITO where pais = ?;";
+                           statement = conn.prepareStatement( query );
+                           statement.setString( 1, pais );
+                           query(statement);
+
+                           query =
+                              "inserto into QUIEREPARTICIPAR " + 
+                              "select max(identificadorSimulacion), ? " +
+                              "from SIMULACION;";
+                           statement = conn.prepareStatement( query );
+
+                           System.out.println( "\nCircuito" );
+                           
+                           query( statement );
+                           break;
+                     }
+                  }
+
+                  query( "update SIMULACION S left join (select sum(C.precio) as costo, Q.identificadorSimulacion from CIRCUITO C, QUIEREPARTICIPAR Q where C.identificadorCircuito = Q.identificadorCircuito and Q.identificadorSimulacion = (select max(identificadorSimulacion) from SIMULACION)) P on S.identificadorSimulacion = P.identificadorSimulacion left join (select (sum(H.precioCuarto) + sum(H.precioDesayuno)) as costo, Q.identificadorSimulacion from HOTEL H, QUIEREDORMIR Q where H.nombreHotel = Q.nombreHotel and H.direccion= Q.direccion and H.nombreCiudad = Q.nombreCiudad and H.pais = Q.pais and Q.identificadorSimulacion = (select max(identificadorSimulacion) from SIMULACION)) D on S.identificadorSimulacion = D.identificadorSimulacion left join (select sum(L.precio) as costo, Q.identificadorSimulacion from LUGARAVISITAR L, QUIEREVISITAR Q where L.nombreLugar = Q.nombreLugar and L.descripcion = L.descripcion and Q.identificadorSimulacion = (select max(identificadorSimulacion) from SIMULACION)) V on S.identificadorSimulacion = V.identificadorSimulacion set S.costo = P.costo + D.costo + V.costo;" );
+                  query( "select costo, identificadorSimulacion from SIMULACION where identificadorSimulacion = (select max(identificadorSimulacion) from SIMULACION)")
+                  break;
                   break;
 
                case 3:
