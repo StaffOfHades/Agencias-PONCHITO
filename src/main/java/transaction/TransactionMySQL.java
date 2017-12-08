@@ -365,7 +365,7 @@ public class TransactionMySQL {
                         break;
 
                      case 3:
-                        System.out.println( "Modificar Fecha de LLegada (año-mes-dia)\n" );
+                        System.out.println( "Modificar Fecha de Llegada (año-mes-dia)\n" );
                         query = "update SIMULACION set fechaLLegada = ? where nombreUsuario = ? or identificadorSimulacion = ?;";
                         statement = conn.prepareStatement( query );
                         statement.setString(1, in.readLine());
