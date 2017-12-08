@@ -8,9 +8,9 @@ public class TransactionMySQL {
    BufferedReader in = null;
 
    static final String URL = "jdbc:mysql://localhost/";
-   static final String BD = "PF";
+   static final String BD = "bd_final";
    static final String USER = "root";
-   static final String PASSWD = "pulzze";
+   static final String PASSWD = null;
 
    int idenSim;
 
@@ -51,6 +51,12 @@ public class TransactionMySQL {
       dumpResultSet( rset );
       System.out.println();
       rset.close();
+      statement.close();
+   }
+
+   private void update( PreparedStatement statement ) throws SQLException {
+      statement.executeUpdate();
+      System.out.println("");
       statement.close();
    }
 
@@ -208,6 +214,8 @@ public class TransactionMySQL {
                   System.out.println( "\nNombre?" );
                   statement.setString( 1, in.readLine() );
 
+                  query( "select fechaSalida from FECHACIRCUITO");
+
                   System.out.println( "Fecha de Salida (año-mes-dia)?" );
                   String fechaSalida = in.readLine();
                   statement.setString( 2, fechaSalida );
@@ -218,11 +226,13 @@ public class TransactionMySQL {
                   System.out.println( "Numero de Personas?" );	//hacer que no sea
                   statement.setInt( 4, Integer.parseInt( in.readLine() ) );
 
+                  query( "select distinct(pais) from CIUDAD");
+
                   System.out.println( "Pais?" );
                   String pais = in.readLine();
                   statement.setString( 5, pais );
 
-                  query( statement );
+                  update( statement );
 
                   System.out.println( "(1) Agregar Lugar\n" ); //pais, ciudad
                   System.out.println( "(2) Agregar Hotel\n" );
@@ -250,7 +260,7 @@ public class TransactionMySQL {
                            System.out.println( "Descripcion" );
                            statement.setString( 2, in.readLine() );
                            
-                           query( statement );
+                           update( statement );
                            break;
                         case 2:
                            query = "select nombreHotel, direccion, nombreCiudad, pais from HOTEL where pais = ?;";
@@ -259,9 +269,7 @@ public class TransactionMySQL {
                            query(statement);
                         
                            query =
-                              "inserto into QUIEREDORMIR " + 
-                              "select max(identificadorSimulacion), ?, ?, ? " +
-                              "from SIMULACION;";
+                              "inserto into QUIEREDORMIR select max(identificadorSimulacion), ?, ?, ?, ? from SIMULACION;";
                            statement = conn.prepareStatement( query );
 
                            System.out.println( "\nHotel" );
@@ -276,7 +284,7 @@ public class TransactionMySQL {
                            System.out.println( "Pais" );
                            statement.setString( 4, in.readLine() );
                            
-                           query( statement );
+                           update( statement );
                            break;
                         case 3:
                            query = "select identificadorCircuito from CIRCUITO where pais = ?;";
@@ -291,8 +299,9 @@ public class TransactionMySQL {
                            statement = conn.prepareStatement( query );
 
                            System.out.println( "\nCircuito" );
-                           
-                           query( statement );
+                           statement.setString( 1, pais );
+
+                           update( statement );
                            break;
                      }
                   }
@@ -318,7 +327,7 @@ public class TransactionMySQL {
                   break;
 
                case 3:
-                  System.out.println( "Numero de simulacion o nombre de usuario a consultar\n" );
+                  System.out.println( "Numero de simulacion o nombre de usuario a modificar\n" );
                   String x3;
                   int id3 = 0;
                   x3 = in.readLine();
@@ -337,7 +346,7 @@ public class TransactionMySQL {
                   switch(Integer.parseInt("0" + in.readLine()) ) {
                      case 1:
                         System.out.println( "Modificar nombre\n" );
-                        query = "update SIMULACION set nombreUsiario = ? where nombreUsuario = ? or identificadorSimulacion = ?;";
+                        query = "update SIMULACION set nombreUsuario = ? where nombreUsuario = ? or identificadorSimulacion = ?;";
                         statement = conn.prepareStatement( query );
                         statement.setString(1, in.readLine());
                         statement.setString(2, x3);
@@ -352,7 +361,7 @@ public class TransactionMySQL {
                         statement.setString(1, in.readLine());
                         statement.setString(2, x3);
                         statement.setInt(3, id3);
-                        query(statement);
+                        update(statement);
                         break;
 
                      case 3:
@@ -362,7 +371,7 @@ public class TransactionMySQL {
                         statement.setString(1, in.readLine());
                         statement.setString(2, x3);
                         statement.setInt(3, id3);
-                        query(statement);
+                        update(statement);
                         break;
 
                      case 4:
@@ -372,7 +381,7 @@ public class TransactionMySQL {
                         statement.setInt(1, Integer.parseInt( in.readLine() ) );
                         statement.setString(2, x3);
                         statement.setInt(3, id3);
-                        query(statement);
+                        update(statement);
                         break;
 
                      case 5:
@@ -382,7 +391,7 @@ public class TransactionMySQL {
                         statement.setString(1, in.readLine());
                         statement.setString(2, x3);
                         statement.setInt(3, id3);
-                        query(statement);
+                        update(statement);
                         break;
 
                      case 6:
@@ -414,7 +423,7 @@ public class TransactionMySQL {
                   statement = conn.prepareStatement( query );
                   statement.setString(1, x4);
                   statement.setInt(2, id4);
-                  query(statement);
+                  update(statement);
                   System.out.println( "Eliminacion exitosa\n" );
                   break;
             }
@@ -462,7 +471,7 @@ public class TransactionMySQL {
                      System.out.println( "Forma de pago: (E) Efectivo, (T) Tarjeta?" );
                      statement.setString( 5, in.readLine() );
 
-                     query(statement);
+                     update(statement);
                   }
 
                   query =
@@ -481,13 +490,14 @@ public class TransactionMySQL {
                   statement.setString( 3, in.readLine() );
 
                   System.out.println( "Numero de Personas?" );	//hacer que no sea
-                  statement.setInt( 4, Integer.parseInt( in.readLine() ) );
+                  int numP = Integer.parseInt( in.readLine() );
+                  statement.setInt( 4,  numP );
 
                   System.out.println( "Pais?" );
                   String pais = in.readLine();
                   statement.setString( 5, pais );
 
-                  query( statement );
+                  update( statement );
 
                   System.out.println( "(1) Agregar Lugar\n" ); //pais, ciudad
                   System.out.println( "(2) Agregar Hotel\n" );
@@ -504,7 +514,7 @@ public class TransactionMySQL {
                            query(statement);
 
                            query =
-                              "inserto into QUIEREVISITAR " + 
+                              "inserto into VISITARA " + 
                               "select max(identificadorSimulacion), ?, ? " +
                               "from SIMULACION;";
                            statement = conn.prepareStatement( query );
@@ -515,49 +525,54 @@ public class TransactionMySQL {
                            System.out.println( "Descripcion" );
                            statement.setString( 2, in.readLine() );
                            
-                           query( statement );
+                           update( statement );
                            break;
                         case 2:
-                           query = "select nombreHotel, direccion, nombreCiudad, pais from HOTEL where pais = ?;";
+                           query = "select nombreHotel, direccion, nombreCiudad, pais from HOTEL where pais = ? and numCuartos > 0;";
                            statement = conn.prepareStatement( query );
                            statement.setString( 1, pais );
                            query(statement);
                         
                            query =
-                              "inserto into QUIEREDORMIR " + 
-                              "select max(identificadorSimulacion), ?, ?, ? " +
-                              "from SIMULACION;";
+                              "select case when ( (select numCuartos from HOTEL where nombreHotel = ? and direccion = ? and nombreCiudad = ? and pais = ?) - ? > 0) then insert into DORMIRA select max(identificadorSimulacion), ?, ?, ?, ? from SIMULACION else select \"Faltan cuartos\" from HOTEL end;";
                            statement = conn.prepareStatement( query );
 
                            System.out.println( "\nHotel" );
-                           statement.setString( 1, in.readLine() );
+                           String hotel = in.readLine();
+                           statement.setString( 1, hotel );
+                           statement.setString( 6, hotel );
 
                            System.out.println( "Direccion" );
-                           statement.setString( 2, in.readLine() );
+                           String direccion = in.readLine();
+                           statement.setString( 2, direccion );
+                           statement.setString( 7, direccion );
 
                            System.out.println( "Ciudad" );
-                           statement.setString( 3, in.readLine() );
+                           String ciudad = in.readLine();
+                           statement.setString( 3, ciudad );
+                           statement.setString( 8, ciudad );
 
                            System.out.println( "Pais" );
                            statement.setString( 4, in.readLine() );
+                           statement.setString( 9, in.readLine() );
+
+                           statement.setInt( 5, numP );
                            
-                           query( statement );
+                           update( statement );
                            break;
                         case 3:
-                           query = "select identificadorCircuito from CIRCUITO where pais = ?;";
+                           query = "select C.identificadorCircuito, F.fechaSalida from CIRCUITO C, FECHACIRCUITO F where C.identificadorCircuito = F.identificadorCircuito and pais = ?;";
                            statement = conn.prepareStatement( query );
                            statement.setString( 1, pais );
                            query(statement);
 
                            query =
-                              "inserto into QUIEREPARTICIPAR " + 
-                              "select max(identificadorSimulacion), ? " +
-                              "from SIMULACION;";
+                              "select case when ( (select nbPersonas from FECHACIRCUITO where identificadorCircuito = ? and fechaSalida = ?) - ? > 0) then insert into PARTICIPARA select max(identificadorSimulacion), ? from SIMULACION else select \"Faltan lugares\" from CIRCUITO end;";
                            statement = conn.prepareStatement( query );
 
                            System.out.println( "\nCircuito" );
                            
-                           query( statement );
+                           update( statement );
                            break;
                      }
                   }
