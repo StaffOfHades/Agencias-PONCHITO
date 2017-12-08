@@ -202,7 +202,7 @@ public class TransactionMySQL {
                case 1:
                   query =
                      "insert into SIMULACION (nombreUsuario, fechaSalida, fechaLlegada, nbPersonas, pais)" +
-                     "values (?, ?, ?, ?, ?);"
+                     "values (?, ?, ?, ?, ?);";
                   statement = conn.prepareStatement( query );
 
                   System.out.println( "\nNombre?" );
@@ -229,9 +229,9 @@ public class TransactionMySQL {
                   System.out.println( "(3) Agregar Circuito\n" );
                   System.out.println( "(4) Guardar y Calcular Precio\n" );
       
-                  int option = Integer.parseInt("0" + in.readLine();
+                  int option = Integer.parseInt("0" + in.readLine() );
                   while(option != 4) {
-                     switch(option) ) {
+                     switch(option) {
                         case 1:
                            query = "select nombreLugar, descripcion from LUGARAVISITAR where pais = ?;";
                            statement = conn.prepareStatement( query );
@@ -298,33 +298,33 @@ public class TransactionMySQL {
                   }
 
                   query( "update SIMULACION S left join (select sum(C.precio) as costo, Q.identificadorSimulacion from CIRCUITO C, QUIEREPARTICIPAR Q where C.identificadorCircuito = Q.identificadorCircuito and Q.identificadorSimulacion = (select max(identificadorSimulacion) from SIMULACION)) P on S.identificadorSimulacion = P.identificadorSimulacion left join (select (sum(H.precioCuarto) + sum(H.precioDesayuno)) as costo, Q.identificadorSimulacion from HOTEL H, QUIEREDORMIR Q where H.nombreHotel = Q.nombreHotel and H.direccion= Q.direccion and H.nombreCiudad = Q.nombreCiudad and H.pais = Q.pais and Q.identificadorSimulacion = (select max(identificadorSimulacion) from SIMULACION)) D on S.identificadorSimulacion = D.identificadorSimulacion left join (select sum(L.precio) as costo, Q.identificadorSimulacion from LUGARAVISITAR L, QUIEREVISITAR Q where L.nombreLugar = Q.nombreLugar and L.descripcion = L.descripcion and Q.identificadorSimulacion = (select max(identificadorSimulacion) from SIMULACION)) V on S.identificadorSimulacion = V.identificadorSimulacion set S.costo = P.costo + D.costo + V.costo;" );
-                  query( "select costo, identificadorSimulacion from SIMULACION where identificadorSimulacion = (select max(identificadorSimulacion) from SIMULACION)")
+                  query( "select costo, identificadorSimulacion from SIMULACION where identificadorSimulacion = (select max(identificadorSimulacion) from SIMULACION)");
                   break;
 
                case 2:
                   System.out.println( "Numero de simulacion o nombre de usuario a consultar\n" );
-                  String x;
-                  int id = 0;
-                  x = in.readLine();
+                  String x2;
+                  int id2 = 0;
+                  x2 = in.readLine();
                   try {
-                     id = Integer.readLine(x)
-                  } catch (NumerFormatException e) {}
+                     id2 = Integer.parseInt( in.readLine() );
+                  } catch (NumberFormatException e) {}
 
                   query = "select * from SIMULACION where nombreUsuario = ? or identificadorSimulacion = ?;";
                   statement = conn.prepareStatement( query );
-                  statement.setString(1, x);
-                  statement.setInt(2, id);
+                  statement.setString(1, x2);
+                  statement.setInt(2, id2);
                   query(statement);
                   break;
 
                case 3:
                   System.out.println( "Numero de simulacion o nombre de usuario a consultar\n" );
-                  String x;
-                  int id = 0;
-                  x = in.readLine();
+                  String x3;
+                  int id3 = 0;
+                  x3 = in.readLine();
                   try {
-                     id = Integer.readLine(x)
-                  } catch (NumerFormatException e) {}
+                     id3 = Integer.parseInt( in.readLine() );
+                  } catch (NumberFormatException e) {}
 
                   System.out.println( "(1) nombre\n" ); //pais, ciudad
                   System.out.println( "(2) fechaSalida\n" );
@@ -340,8 +340,8 @@ public class TransactionMySQL {
                         query = "update SIMULACION set nombreUsiario = ? where nombreUsuario = ? or identificadorSimulacion = ?;";
                         statement = conn.prepareStatement( query );
                         statement.setString(1, in.readLine());
-                        statement.setString(2, x);
-                        statement.setInt(3, id);
+                        statement.setString(2, x3);
+                        statement.setInt(3, id3);
                         query(statement);
                         break;
 
@@ -350,8 +350,8 @@ public class TransactionMySQL {
                         query = "update SIMULACION set fechaSalida = ? where nombreUsuario = ? or identificadorSimulacion = ?;";
                         statement = conn.prepareStatement( query );
                         statement.setString(1, in.readLine());
-                        statement.setString(2, x);
-                        statement.setInt(3, id);
+                        statement.setString(2, x3);
+                        statement.setInt(3, id3);
                         query(statement);
                         break;
 
@@ -360,8 +360,8 @@ public class TransactionMySQL {
                         query = "update SIMULACION set fechaLLegada = ? where nombreUsuario = ? or identificadorSimulacion = ?;";
                         statement = conn.prepareStatement( query );
                         statement.setString(1, in.readLine());
-                        statement.setString(2, x);
-                        statement.setInt(3, id);
+                        statement.setString(2, x3);
+                        statement.setInt(3, id3);
                         query(statement);
                         break;
 
@@ -370,8 +370,8 @@ public class TransactionMySQL {
                         query = "update SIMULACION set nbPersonas = ? where nombreUsuario = ? or identificadorSimulacion = ?;";
                         statement = conn.prepareStatement( query );
                         statement.setInt(1, Integer.parseInt( in.readLine() ) );
-                        statement.setString(2, x);
-                        statement.setInt(3, id);
+                        statement.setString(2, x3);
+                        statement.setInt(3, id3);
                         query(statement);
                         break;
 
@@ -380,8 +380,8 @@ public class TransactionMySQL {
                         query = "update SIMULACION set pais = ? where nombreUsuario = ? or identificadorSimulacion = ?;";
                         statement = conn.prepareStatement( query );
                         statement.setString(1, in.readLine());
-                        statement.setString(2, x);
-                        statement.setInt(3, id);
+                        statement.setString(2, x3);
+                        statement.setInt(3, id3);
                         query(statement);
                         break;
 
@@ -403,17 +403,17 @@ public class TransactionMySQL {
                case 4:
 
                   System.out.println( "Numero de simulacion o nombre (de usuario) para eliminar\n" );
-                  String x;
-                  int id = 0;
-                  x = in.readLine();
+                  String x4;
+                  int id4 = 0;
+                  x4 = in.readLine();
                   try {
-                     id = Integer.readLine(x)
-                  } catch (NumerFormatException e) {}
+                     id4 = Integer.parseInt( in.readLine() );
+                  } catch (NumberFormatException e) {}
 
                   query = "delete from SIMULACION where nombreUsuario = ? or identificadorSimulacion = ?;";
                   statement = conn.prepareStatement( query );
-                  statement.setString(1, x);
-                  statement.setInt(2, id);
+                  statement.setString(1, x4);
+                  statement.setInt(2, id4);
                   query(statement);
                   System.out.println( "Eliminacion exitosa\n" );
                   break;
@@ -434,8 +434,8 @@ public class TransactionMySQL {
                   int id = 0;
                   x = in.readLine();
                   try {
-                     id = Integer.readLine(x)
-                  } catch (NumerFormatException e) {}
+                     id = Integer.parseInt( in.readLine() );
+                  } catch (NumberFormatException e) {}
                   // TODO VALIDAR RESERVACION
                   break;
 
@@ -443,7 +443,9 @@ public class TransactionMySQL {
                   System.out.println( "(1) Agregar usuario\n" ); //pais, ciudad
                   System.out.println( "(2) Continuar\n" );
                   if(Integer.parseInt("0" + in.readLine()) == 1) {
-                     query = "insert into USUARIO values (?, ?, ?, ?, ?);"
+                     query = "insert into USUARIO values (?, ?, ?, ?, ?);";
+
+                     statement = conn.prepareStatement( query );
 
                      System.out.println( "\nNombre?" );
                      statement.setString( 1, in.readLine() );
@@ -465,7 +467,7 @@ public class TransactionMySQL {
 
                   query =
                      "insert into RESERVACION (nombreUsuario, fechaSalida, fechaLlegada, nbPersonas, pais)" +
-                     "values (?, ?, ?, ?, ?);"
+                     "values (?, ?, ?, ?, ?);";
                   statement = conn.prepareStatement( query );
 
                   System.out.println( "\nNombre?" );
@@ -492,9 +494,9 @@ public class TransactionMySQL {
                   System.out.println( "(3) Agregar Circuito\n" );
                   System.out.println( "(4) Guardar y Calcular Precio\n" );
       
-                  int option = Integer.parseInt("0" + in.readLine();
+                  int option = Integer.parseInt("0" + in.readLine() );
                   while(option != 4) {
-                     switch(option) ) {
+                     switch(option) {
                         case 1:
                            query = "select nombreLugar, descripcion from LUGARAVISITAR where pais = ?;";
                            statement = conn.prepareStatement( query );
@@ -561,8 +563,7 @@ public class TransactionMySQL {
                   }
 
                   query( "update SIMULACION S left join (select sum(C.precio) as costo, Q.identificadorSimulacion from CIRCUITO C, QUIEREPARTICIPAR Q where C.identificadorCircuito = Q.identificadorCircuito and Q.identificadorSimulacion = (select max(identificadorSimulacion) from SIMULACION)) P on S.identificadorSimulacion = P.identificadorSimulacion left join (select (sum(H.precioCuarto) + sum(H.precioDesayuno)) as costo, Q.identificadorSimulacion from HOTEL H, QUIEREDORMIR Q where H.nombreHotel = Q.nombreHotel and H.direccion= Q.direccion and H.nombreCiudad = Q.nombreCiudad and H.pais = Q.pais and Q.identificadorSimulacion = (select max(identificadorSimulacion) from SIMULACION)) D on S.identificadorSimulacion = D.identificadorSimulacion left join (select sum(L.precio) as costo, Q.identificadorSimulacion from LUGARAVISITAR L, QUIEREVISITAR Q where L.nombreLugar = Q.nombreLugar and L.descripcion = L.descripcion and Q.identificadorSimulacion = (select max(identificadorSimulacion) from SIMULACION)) V on S.identificadorSimulacion = V.identificadorSimulacion set S.costo = P.costo + D.costo + V.costo;" );
-                  query( "select costo, identificadorSimulacion from SIMULACION where identificadorSimulacion = (select max(identificadorSimulacion) from SIMULACION)")
-                  break;
+                  query( "select costo, identificadorSimulacion from SIMULACION where identificadorSimulacion = (select max(identificadorSimulacion) from SIMULACION)");
                   break;
 
                case 3:
@@ -658,7 +659,7 @@ public class TransactionMySQL {
       while( cont )
 
          try {
-            cont = transaction.menu()
+            cont = transaction.menu();
 
          } catch( Exception e ) {
 
